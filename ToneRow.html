@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <script>
+	
+	// main method
+	function createRows() {
+		var notes = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];	
+		var toneRow = new Array(12);
+		
+		generateFirstRow(toneRow);
+		generateRows(toneRow);
+		printRow(toneRow, notes);
+	}
+
+	// generates the first row of notes
+	function generateFirstRow(toneRow) {
+		// sets all the values in the 12x12 matrix to 13
+		for(var i = 0; i < toneRow.length; i++) {
+		  toneRow[i] = new Array(12);	// creates a size 12 array at each element (makes it 12x12)
+			for(var j = 0; j < toneRow.length; j++) {
+				toneRow[i][j] = 13;
+			}
+		}
+		
+		// generates the first row of notes
+		for(var i = 0; i < toneRow.length; i++) {
+			var note = parseInt(Math.random() * 12); // random number [0-11]
+			while(hasNote(toneRow, note)) {	// checks if the note has been used
+				note = parseInt(Math.random() * 12);	// if used, get a new note
+			}
+			toneRow[0][i] = note;
+		}
+	}
+	
+	// checks if note has been used
+	function hasNote(toneRow, note) {
+		for(var i = 0; i < toneRow.length; i++) {
+			if(toneRow[0][i] == note) {
+				return true;	// return true if note has been used
+			}
+		}	
+		return false;	// return false if note has not been used
+	}
+
+	// generates the rest of the rows
+	function generateRows(toneRow) {
+		for(var i = 1; i < toneRow.length; i++) {
+			toneRow[i][0] = ((toneRow[i - 1][0] - (toneRow[0][i] - toneRow[0][i - 1])) + 12) % 12;	// first note of each line
+			for(var j = 1; j < toneRow.length; j++) {
+				toneRow[i][j] = ((toneRow[i][j - 1] + (toneRow[0][j] - toneRow[0][j - 1])) + 12) % 12;
+			}
+		}
+	}
+
+	// prints the square in a table format
+	function printRow(toneRow, notes) {
+		var printThis = "<table style=&quot;width:80px&quot;>";
+		for(var i = 0; i < toneRow.length; i++) {
+		  printThis += "<tr>";
+			for(var j = 0; j < toneRow[0].length; j++) {
+				printThis += "<td>" + notes[toneRow[i][j]] + "</td>";
+			}
+			printThis += "</tr>";
+		}
+		printThis += "</table>";
+		document.getElementById("print").innerHTML = printThis;
+	}
+
+  </script>
+ </head>
+ <body>
+	<button onclick="createRows()">Generate Magic Square</button>
+	<p id="print"></p>
+ </body>
+</html>
